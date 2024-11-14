@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block mainContent %}
+<div class="lg:content-auto">
+    <h1 class="text-3xl font-bold">
+        Wine Quality Predictor
+    </h1>
+    <form id="predictForm" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        
+        <div>
+            {{ form.fixed_acidity.label }} {{ form.fixed_acidity(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.volatile_acidity.label }} {{ form.volatile_acidity(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.citric_acid.label }} {{ form.citric_acid(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.residual_sugar.label }} {{ form.residual_sugar(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.chlorides.label }} {{ form.chlorides(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.free_sulphur.label }} {{ form.free_sulphur(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.total_sulphur.label }} {{ form.total_sulphur(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.density.label }} {{ form.density(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.ph.label }} {{ form.ph(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.sulphates.label }} {{ form.sulphates(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        <div>
+            {{ form.alcohol.label }} {{ form.alcohol(class="mt-1 p-2 border border-gray-300 rounded w-full") }}
+        </div>
+        
+        <button type="button" onclick="predictQuality()" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+            Predict Quality
+        </button>
+    </form>
+</div>
+
+<h3 id="result" class="mt-4 text-xl font-semibold text-green-600"></h3>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function predictQuality() {
+        const form = document.getElementById('predictForm');
+        const formData = new FormData(form);
+
+        fetch('/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('result').innerText = `Error: ${data.error}`;
+            } else {
+                document.getElementById('result').innerText = `Predicted Quality: ${data.predicted_quality}`;
+            }
+        })
+        .catch(error => {
+            document.getElementById('result').innerText = `Error: ${error}`;
+        });
+    }
+</script>
+{% endblock %}
